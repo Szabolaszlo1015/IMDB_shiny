@@ -8,7 +8,7 @@ url <- "https://www.imdb.com/chart/top"
 webpage <- read_html(url)
 
 # Using rvest and html_nodes in combination with the Google Chrome Selector Gadget
-# Ratings, titles, votes, number of Oscars
+# Ratings, titles, votes, number of Oscars, movie links
 
 ratings <- webpage %>% 
   html_nodes("div strong") %>% 
@@ -35,12 +35,14 @@ movie.nodes <- html_nodes(webpage,'.titleColumn a')
 movie.link = sapply(html_attrs(movie.nodes),`[[`,'href')
 movie.link = paste0("http://www.imdb.com",movie.link)
 
-
+# Generating ranks
 rank = seq(1, 250, 1)
 
+# Making a dataframe and pick the first 20 rows
 top250 <- data.frame(rank, titles, ratings, votes)
 top20 <- head(top250, 20)
 
+# Manually caculated number of Oscars (could not find out how to extract this data from html)
 oscar <- c(0,3,2,6,0,7,11,1,4,0,6,0,4,2,1,4,1,5,0,0)
 top20$oscar <-oscar
 
@@ -73,16 +75,16 @@ maxvotes = max(top20_updated$votes)
 review_penalizer <- floor((top20_updated$votes - maxvotes)/100000)*0.1
 top20_updated$review_penalizer <- c(review_penalizer)
 
-res = c()
-if (top20$oscar == 1 | 2)
-  return(0.3)
 
 
-updated_rating <- top20_updated$ratings + top20_updated$review_penalizer
-top20_updated$newrating <- c(updated_rating)
 
 
-check <- function(x) {
+
+
+
+# Function to calculate new ranking based on number of Oscars
+
+oscarfunc <- function(x) {
   if (x == 0) {
     result <- 0
   }
@@ -104,19 +106,23 @@ check <- function(x) {
   return(result)
 }
 
-result_oscar <- lapply(top20$oscar, check)
+result_oscar <- unlist(lapply(top20_updated$oscar, oscarfunc))
 
+top20_updated$oscar_corr <- c(result_oscar)
+
+# update ratings
+newrating <- (top20_updated$ratings + top20_updated$review_penalizer + top20_updated$oscar_corr)
+top20_updated$updated_rating <- c(newrating)
+
+
+# calculating changes in ratings
 
 sort.by.column <- function(df, column.name) {
   df[order(df[,column.name], decreasing = T ),]
 }  
 
-top20_updated <- sort.by.column(top20_updated, "newrating")
+top20_updated <- sort.by.column(top20_updated, "updated_rating")
 
+rank_updated = seq(1, 20, 1)
+top20_updated$rank_updated <- rank_updated
 
-
-rank_afterrevpen = seq(1, 20, 1)
-top20_updated$rank_afterrevpen <- rank_afterrevpen
-
-rankchange_revpen <- top20_updated$rank - top20_updated$rank_afterrevpen
-top20_updated$rankchange_revpen <- rankchange_revpen
