@@ -126,3 +126,5 @@ top20_updated <- sort.by.column(top20_updated, "updated_rating")
 rank_updated = seq(1, 20, 1)
 top20_updated$rank_updated <- rank_updated
 
+rankchange <- top20_updated$rank - top20_updated$rank_updated
+top20_updated$rankchange <- rankchange
