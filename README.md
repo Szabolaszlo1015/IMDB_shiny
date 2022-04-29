@@ -7,7 +7,7 @@
 
 Use: 
   
-  -copy this link to your browser https://imdbscraper.shinyapps.io/imdb_shiny/
+  - copy this link to your browser https://imdbscraper.shinyapps.io/imdb_shiny/
   
   OR
   
