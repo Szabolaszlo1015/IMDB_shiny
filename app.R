@@ -68,9 +68,9 @@ server <- function(input, output) {
   
   recalc <- recalc_rank %>% 
     mutate(
-      Ratings = cell_spec(x = Ratings, format = "html", bold = T, 
+      Change = cell_spec(x = Change, format = "html", bold = T, 
                           color = "white", 
-                          background = ifelse(Change > 0, "#66bf3f", "#0e5a9b"))
+                          background = ifelse(Change > 0, "#66bf3f", "#FF0000"))
     ) %>%
     kable(escape = F) %>% # NOTE must have "escape = F" for HTML to render
     kable_styling(bootstrap_options = c("striped", "hover"), full_width = F)

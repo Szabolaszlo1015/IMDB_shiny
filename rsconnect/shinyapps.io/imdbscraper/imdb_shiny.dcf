@@ -5,7 +5,7 @@ account: imdbscraper
 server: shinyapps.io
 hostUrl: https://api.shinyapps.io/v1
 appId: 6199787
-bundleId: 5851141
+bundleId: 5851276
 url: https://imdbscraper.shinyapps.io/imdb_shiny/
-when: 1651240503.34633
-lastSyncTime: 1651240503.34633
+when: 1651242149.72761
+lastSyncTime: 1651242149.72761
