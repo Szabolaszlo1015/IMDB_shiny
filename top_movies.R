@@ -1,4 +1,6 @@
 
+
+
 ## Table Analytics==============================================================
 
 # Establishing the URL we want to scrape data from
@@ -34,13 +36,18 @@ movie.link = sapply(html_attrs(movie.nodes),`[[`,'href')
 movie.link = paste0("http://www.imdb.com",movie.link)
 
 
-top250 <- data.frame(titles, ratings, votes, movie.link)
+rank = seq(1, 250, 1)
+
+top250 <- data.frame(rank, titles, ratings, votes)
 top20 <- head(top250, 20)
+
+oscar <- c(0,3,2,6,0,7,11,1,4,0,6,0,4,2,1,4,1,5,0,0)
+top20$oscar <-oscar
 
 # #read all urls & store the values
 # url1 <- as.character(top20$movie.link)
 
-# # Looping starts here 
+# # Looping (does not work)
 # movie.db <- lapply(url1,function(x) {  
 #   
 #   page <- read_html(x)
@@ -58,4 +65,58 @@ top20 <- head(top250, 20)
 # oscar <- page %>% 
 #   html_node(page, ".award_category")
 
+# penalizer after number of votes
+top20_updated <- data.frame(top20)
 
+maxvotes = max(top20_updated$votes)
+
+review_penalizer <- floor((top20_updated$votes - maxvotes)/100000)*0.1
+top20_updated$review_penalizer <- c(review_penalizer)
+
+res = c()
+if (top20$oscar == 1 | 2)
+  return(0.3)
+
+
+updated_rating <- top20_updated$ratings + top20_updated$review_penalizer
+top20_updated$newrating <- c(updated_rating)
+
+
+check <- function(x) {
+  if (x == 0) {
+    result <- 0
+  }
+  else if (x >= 1 & x <= 2) {
+    result <- 0.3
+  }
+  else if (x >= 3 & x <= 5) {
+    result <- 0.5
+  }
+  else if (x >= 6 & x <= 10) {
+    result <- 1
+  }
+  else if (x > 10 ) {
+    result <- 1.5
+  }
+  else {
+    result <- "NA"
+  }
+  return(result)
+}
+
+result_oscar <- lapply(top20$oscar, check)
+
+
+sort.by.column <- function(df, column.name) {
+  df[order(df[,column.name], decreasing = T ),]
+}  
+
+top20_updated <- sort.by.column(top20_updated, "newrating")
+
+
+
+rank_afterrevpen = seq(1, 20, 1)
+top20_updated$rank_afterrevpen <- rank_afterrevpen
+
+rankchange_revpen <- top20_updated$rank - top20_updated$rank_afterrevpen
+top20_updated$rankchange_revpen <- rankchange_revpen
