@@ -6,7 +6,9 @@
 - Option to download the dataframe.
 
 Use: 
-  copy this to your browser https://imdbscraper.shinyapps.io/imdb_shiny/
+  -copy this to your browser https://imdbscraper.shinyapps.io/imdb_shiny/
+  OR
+  - clone repository, open project, run init.R, run app.R by clicking Run App
   
   
 TODO list:
