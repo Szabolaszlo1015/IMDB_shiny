@@ -13,8 +13,9 @@ library(rsconnect)
 
 
 ui <- navbarPage(
+  theme = shinytheme("united"),
   # Application title
-  titlePanel("Top 20 IMDB Movies"),
+  title = "Top 20 IMDB Movies",
   
   mainPanel(
     tabsetPanel(
@@ -78,11 +79,11 @@ server <- function(input, output) {
   # Output for total movietable
   output$normal <- function(){
     normal %>% 
-      scroll_box(width = "500px", height = "400px")
+      scroll_box(width = "700px", height = "500px")
   }
   output$recalc <- function(){
     recalc %>% 
-      scroll_box(width = "550px", height = "400px")
+      scroll_box(width = "700px", height = "500px")
   }
   
   output$download_normal <- downloadHandler(
